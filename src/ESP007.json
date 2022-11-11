@@ -1,0 +1,22 @@
+{
+    "properties": [
+      {
+        "identifier": "Temperature",
+        "dataType": {
+          "type": "float"
+        }
+      },
+      {
+        "identifier": "NightLightSwitch",
+        "dataType": {
+          "type": "bool"
+        }
+      },
+      {
+        "identifier": "ESP_SELF",
+        "dataType": {
+          "type": "text"
+        }
+      }
+    ]
+  }
