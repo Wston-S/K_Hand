@@ -18,8 +18,6 @@ static void lvglTask_init(void)
     lv_port_disp_init();
     lv_port_indev_init();
 
-    //test
-
     /*获取LVGL版本信息*/
 #if 0
     String LVGL_Arduino = "Hello LVGL! ";
