@@ -17,7 +17,7 @@ void setup()
   led_task_init();
   lvgl_task_init();
   //sensor_task_init();
-  encoder_task_init();
+  //encoder_task_init();
   net_task_init();
 
   //demo_task_init();
