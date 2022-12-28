@@ -1,0 +1,6 @@
+sstaub/Ticker@^4.4.0
+mathertel/OneButton@^2.0.3
+lvgl/lvgl@8.2.0
+tockn/MPU6050_tockn@^1.5.2
+bodmer/TFT_eSPI@^2.4.75
+knolleary/PubSubClient@^2.8
