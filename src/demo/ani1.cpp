@@ -1,6 +1,6 @@
 #include "lvgl.h"
 #include "demo.h"
-#include <port/lv_port_indev.h>
+#include <port/lv_port/lv_port_indev.h>
 
 static void anim_x_cb(void * var, int32_t v)
 {

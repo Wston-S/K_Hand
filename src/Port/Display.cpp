@@ -1,18 +1,27 @@
+#include "Display.h"
 #include <Arduino.h>
 #include <lvgl.h>
-#include <Port/lv_port_disp.h>
-#include <Port/lv_port_indev.h>
-#include <stdio.h>
-//#include "demos/lv_demos.h"
-#include "./demo/demo.h"
+#include <Port/lv_port/lv_port_disp.h>
+#include <Port/lv_port/lv_port_indev.h>
 
-extern int enc_pressed(void);
-extern int16_t getencoder_diff(void);
-extern void lv_example_anim_2(void);
 
 static TaskHandle_t  lvglTask_Handle;
 
-static void lvglTask_init(void)
+static void lvgl_task(void *param)
+{
+    (void)param;
+
+    Serial.printf("lvgl_task start to run\n");
+
+    while(1)
+    {       
+        lv_timer_handler();
+
+        vTaskDelay(pdMS_TO_TICKS(5));
+    }
+}
+
+void Port_Init()
 {
     lv_init();
     lv_port_disp_init();
@@ -62,26 +71,7 @@ static void lvglTask_init(void)
     //lv_example_ani1();
     //lv_example_ani2();
     //lv_example_ani3();
-}
 
-
-static void lvgl_task(void *param)
-{
-    (void)param;
-
-    Serial.printf("lvgl_task start to run\n");
-
-    while(1)
-    {       
-        lv_timer_handler();
-
-        vTaskDelay(pdMS_TO_TICKS(5));
-    }
-}
-
-void lvgl_task_init(void)
-{
-    lvglTask_init();
 
     xTaskCreate(
             lvgl_task,          /* ÈÎÎñº¯Êý */
