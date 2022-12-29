@@ -156,6 +156,7 @@ static void net_task(void *param)
 
     while (1)
     {
+#if 0
         if (WiFi.isConnected() == true)
         {           
             mqttCheckConnect();            
@@ -176,7 +177,8 @@ static void net_task(void *param)
         }
 
         client.loop();
-        //vTaskDelay(2000 / portTICK_RATE_MS);
+#endif
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
 
@@ -207,8 +209,8 @@ static void netTask_init(void)
         Serial.println("[error]--WiFi un-connected!");
     }
 
-    client.setServer(Aliyun_host, Aliyun_port); /* 连接WiFi之后，连接MQTT服务器 */
-    client.setCallback(callback);
+    //client.setServer(Aliyun_host, Aliyun_port); /* 连接WiFi之后，连接MQTT服务器 */
+    //client.setCallback(callback);
 }
 
 void net_task_init(void)

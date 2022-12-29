@@ -11,6 +11,7 @@
  *********************/
 #include "lv_port_indev.h"
 #include "lvgl.h"
+#include "HAL/HAL.h"
 
 /*********************
  *      DEFINES
@@ -19,8 +20,7 @@
 /**********************
  *      TYPEDEFS
  **********************/
-extern int enc_pressed(void);
-extern int16_t getencoder_diff(void);
+
 /**********************
  *  STATIC PROTOTYPES
  **********************/
@@ -106,12 +106,12 @@ static void encoder_init(void)
 /*Will be called by the library to read the encoder*/
 static void encoder_read(lv_indev_drv_t *indev_drv, lv_indev_data_t *data)
 {
-    if (enc_pressed())
+    if (HAL::Encoder_GetIsPush())
         data->state = LV_INDEV_STATE_PR;
     else
         data->state = LV_INDEV_STATE_REL;
 
-    data->enc_diff = getencoder_diff();
+    data->enc_diff = HAL::Encoder_GetDiff();
 }
 
 /*Call this function in an interrupt to process encoder events (turn, press)*/

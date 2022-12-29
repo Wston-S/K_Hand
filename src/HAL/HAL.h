@@ -10,7 +10,6 @@ namespace HAL
 
 /* Encoder */
     void Encoder_Init();
-    void Encoder_Update();
     int16_t Encoder_GetDiff();
     bool Encoder_GetIsPush();
 

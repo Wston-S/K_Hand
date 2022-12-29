@@ -146,8 +146,8 @@ void lv_port_disp_init(void)
 static void disp_init(void)
 {
     /*You code here*/
-    pinMode(25, OUTPUT);
-    digitalWrite(25, HIGH);
+    //pinMode(25, OUTPUT);
+    //digitalWrite(25, HIGH);
     tft.init();         //初始化
     tft.setRotation(2); //屏幕旋转方向
 }

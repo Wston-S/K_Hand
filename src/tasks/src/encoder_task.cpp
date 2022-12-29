@@ -1,6 +1,6 @@
 #include "./../inc/encoder_task.h"
 #include <Arduino.h>
-#include <OneButton.h>
+
 #include <lvgl.h>
 #include <TFT_eSPI.h>
 #include "./../inc/sensor_task.h"
@@ -37,45 +37,10 @@ static void MultiClickPress1()
 
 static void Encoder_EventHandler()
 {
-#if 1
-  //encoder_flag = 1;
-  //xSemaphoreGiveFromISR( MuxSem_Handle, NULL);//给出互斥量
-
   if(digitalRead(EC_A) == 0)
   {
-    //int dir;
-    
-    // if(0 == digitalRead(EC_B))
-    // {
-    //   test_encoder--;
-    // }
-    // else{
-    //   test_encoder++;
-    // }
-
     xSemaphoreGiveFromISR( MuxSem_Handle, NULL);//给出互斥量
   }
-#endif
-
-#if 0
-  if(digitalRead(EC_A) == 0)
-  {
-    int dir;
-    
-    if(0 == digitalRead(EC_B))
-    {
-      dir = -1;
-    }
-    else{
-      dir = 1;
-    }
-
-    encoder_flag = 1;
-    encoder_count += dir;
-
-    encoder_diff += dir;
-  }  
-#endif
 }
 
 int enc_pressed(void)
@@ -161,64 +126,14 @@ static void encoder_task(void *param)
     encoder_count += dir;
 
     encoder_diff += dir;
-
-    // if(digitalRead(EC_A) == 0)
-    // {
-    //   if(0 == digitalRead(EC_B))
-    //   {
-    //     test_encoder--;
-    //   }
-    //   else{
-    //     test_encoder++;
-    //   }
-    // }
-    
-    //Serial.printf("test_encoder=%d\n", test_encoder);
 #endif
                         
 #if 0
         calGyroY(mpu6050.getGyroY());
         vTaskDelay(pdMS_TO_TICKS(10));
 #endif
+
 #if 0
-        if(1 == encoder_flag)
-        {
-          encoder_flag = 0;
-          //Serial.printf("encoder_count = %d\n", encoder_count);
-          //Serial.printf("encoder_diff = %d\n", encoder_diff);
-        }
-
-        vTaskDelay(200 / portTICK_RATE_MS);
-#endif
-#if 0
-        xSemaphoreTake(MuxSem_Handle,/* 互斥量句柄 */ 
-                            portMAX_DELAY); /* 等待时间 */ 
-                            
-        Serial.printf("xSemaphoreTake --- \n");
-
-        if(digitalRead(EC_A) == 0)
-        {
-          int dir;
-          
-          if(0 == digitalRead(EC_B))
-          {
-            dir = -1;
-          }
-          else{
-            dir = 1;
-          }
-
-          encoder_count += dir;
-
-          encoder_diff += dir;
-
-          Serial.printf("count = %d\n", encoder_count);
-        }    
-
-        //vTaskDelay(pdMS_TO_TICKS(10));
-        xSemaphoreTake(MuxSem_Handle, 0); //clear
-#endif
-#if 1
       button1.tick();
       vTaskDelay(10 / portTICK_RATE_MS);
 #endif
@@ -228,9 +143,11 @@ static void encoder_task(void *param)
 
 static void encoderTask_init(void)
 {
+#if 0
     button1.attachClick(click1);
     button1.attachDoubleClick(doubleclick1);
     button1.attachMultiClick(MultiClickPress1);
+#endif
 
     pinMode(EC_A, INPUT_PULLUP);
     pinMode(EC_B, INPUT_PULLUP);
