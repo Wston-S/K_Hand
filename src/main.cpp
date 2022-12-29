@@ -12,19 +12,14 @@ void setup()
   HAL::Init();
   Port_Init();
 
-  //sensor_task_init();
-  //net_task_init();
-  //demo_task_init();
-
+  // sensor_task_init();
+  // net_task_init();
+  // demo_task_init();
 }
 
 void loop()
 {
   HAL::Update();
 
-  delay(20);
+  delay(10);
 }
-
-
-
-

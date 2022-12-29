@@ -1,5 +1,6 @@
 #include "HAL/HAL.h"
-#include "App/Config/Version.h""
+#include "App/Config/Version.h"
+         
 
 void HAL::Init()
 {
@@ -13,12 +14,13 @@ void HAL::Init()
     HAL::Encoder_Init();
     HAL::Buzz_Init();
     HAL::Audio_Init();
+    HAL::Power_Init();
 
     Audio_PlayMusic("Startup");
-
 }
 
 void HAL::Update()
 {
     HAL::Audio_Update();
+    HAL::Encoder_Update();
 }

@@ -1,6 +1,5 @@
 #include "HAL/HAL.h"
-#include <OneButton.h>
-
+#include "App/Utils/ButtonEvent/ButtonEvent.h"
 
 
 #define EC_K      9
@@ -12,23 +11,24 @@ static TaskHandle_t encoderTask_Handle;
 static int encoder_diff;
 static int encoder_count = 0;
 static int encoder_flag = 0;
-static OneButton button1(EC_K, true, true);
 static SemaphoreHandle_t MuxSem_Handle = NULL;
 
-
-static void click1()
+static ButtonEvent EncoderPush(3000);
+        
+ 
+static void Encoder_PushHandler(ButtonEvent* btn, int event)
 {
-  Serial.println("Button 1 click.");
-}
-
-static void doubleclick1()
-{
-  Serial.println("Button 1 doubleclick.");
-}
-
-static void MultiClickPress1()
-{
-  Serial.println("MultiClickPress1");
+    if (event == ButtonEvent::EVENT_PRESSED)
+    {
+        HAL::Buzz_Tone(500, 20);
+    } else if (event == ButtonEvent::EVENT_RELEASED)
+    {
+        HAL::Buzz_Tone(700, 20);
+    } else if (event == ButtonEvent::EVENT_LONG_PRESSED)
+    {
+        HAL::Audio_PlayMusic("Shutdown");
+        HAL::Power_Shutdown();
+    }
 }
 
 static void Encoder_EventHandler()
@@ -91,7 +91,6 @@ static void encoder_task(void *param)
 
     while (1)
     {
-#if 1
     xSemaphoreTake(MuxSem_Handle,/* 互斥量句柄 */ 
                         portMAX_DELAY); /* 等待时间 */
 
@@ -110,16 +109,10 @@ static void encoder_task(void *param)
     encoder_count += dir;
 
     encoder_diff += dir;
-#endif
                         
 #if 0
         calGyroY(mpu6050.getGyroY());
         vTaskDelay(pdMS_TO_TICKS(10));
-#endif
-
-#if 0
-      button1.tick();
-      vTaskDelay(10 / portTICK_RATE_MS);
 #endif
         
     }
@@ -127,15 +120,12 @@ static void encoder_task(void *param)
 
 void HAL::Encoder_Init()
 {
-#if 0
-    button1.attachClick(click1);
-    button1.attachDoubleClick(doubleclick1);
-    button1.attachMultiClick(MultiClickPress1);
-#endif
-
     pinMode(EC_A, INPUT_PULLUP);
     pinMode(EC_B, INPUT_PULLUP);
+    pinMode(EC_K, INPUT_PULLUP);
     attachInterrupt(EC_A, Encoder_EventHandler, FALLING);   
+
+    EncoderPush.EventAttach(Encoder_PushHandler);
 
      xTaskCreate(
         encoder_task,         /* 任务函数 */
@@ -158,4 +148,9 @@ int16_t HAL::Encoder_GetDiff()
     encoder_diff = 0;
 
     return ret;
+}
+
+void HAL::Encoder_Update()
+{
+  EncoderPush.EventMonitor(Encoder_GetIsPush());
 }
