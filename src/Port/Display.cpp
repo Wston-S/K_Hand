@@ -11,6 +11,9 @@ static TaskHandle_t  lvglTask_Handle;
 
 void demo1(void)
 {
+    lv_obj_remove_style_all(lv_scr_act());
+    lv_disp_set_bg_color(lv_disp_get_default(), lv_color_black());
+    
     String LVGL_Arduino;
     uint32_t vol = HAL::Power_GetBatteryVol();
     LVGL_Arduino += "Battery Vol:"+String(vol)+"mv   ";
