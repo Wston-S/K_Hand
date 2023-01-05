@@ -2,7 +2,7 @@
 #define __RESOURCEPOOL_H
 
 #include "lvgl.h"
-#include "App/Utils/PageManager/ResourceManager.h"
+#include "App/Utils/ResourceManager/ResourceManager.h"
 
 class ResourcePool
 {

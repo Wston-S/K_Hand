@@ -4,6 +4,12 @@
         "*.tcc": "cpp",
         "cmath": "cpp",
         "memory": "cpp",
-        "lv_slider.h": "c"
+        "lv_slider.h": "c",
+        "typeinfo": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "algorithm": "cpp",
+        "random": "cpp"
     }
 }
