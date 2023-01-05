@@ -1,5 +1,5 @@
 #include "HAL/HAL.h"
-#include "App/Config/Version.h"
+#include "App/Configs/Version.h"
          
 
 void HAL::Init()

@@ -1,6 +1,5 @@
 #include "ResourcePool.h"
 
-
 ResourcePool Resource;
 
 extern "C"{

@@ -6,8 +6,24 @@
 #include <Port/lv_port/lv_port_indev.h>
 
 
-static TaskHandle_t  lvglTask_Handle;
+TaskHandle_t  handleTaskLvgl;
 
+
+static void bt_event_handler(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * obj = lv_event_get_target(e);
+    lv_obj_t *label = (lv_obj_t *)lv_event_get_user_data(e);
+    char *text = lv_label_get_text(label);
+
+    if(code == LV_EVENT_SHORT_CLICKED) 
+    {
+        Serial.printf("bt_event_handler\n");
+        Serial.printf("%s has clicked\n", text);
+
+        HAL::Audio_PlayMusic(text);
+    }
+}
 
 void demo1(void)
 {
@@ -22,26 +38,39 @@ void demo1(void)
     lv_label_set_text(label1, LVGL_Arduino.c_str());
     lv_obj_align(label1, LV_ALIGN_BOTTOM_RIGHT, 0, 0); 
 
+    lv_obj_t *label_temp;
 
     lv_obj_t *btn1 = lv_btn_create(lv_scr_act());//创建按钮1
-	lv_obj_set_size(btn1,50,30);
+	lv_obj_set_size(btn1,110,30);
 	lv_obj_set_pos(btn1,0,0);
+    label_temp = lv_label_create(btn1);
+    lv_label_set_text(label_temp, "Error");
+    lv_obj_add_event_cb(btn1, bt_event_handler, LV_EVENT_ALL, label_temp);
 	
 	lv_obj_t *btn2 = lv_btn_create(lv_scr_act());//创建按钮2
-    lv_obj_set_size(btn2,50,30);
+    lv_obj_set_size(btn2,110,30);
 	lv_obj_set_pos(btn2,0,60);
+    label_temp = lv_label_create(btn2);
+    lv_label_set_text(label_temp, "Connect");
+    lv_obj_add_event_cb(btn2, bt_event_handler, LV_EVENT_ALL, label_temp);
 
 	lv_obj_t *btn3 = lv_btn_create(lv_scr_act());//创建按钮3
-    lv_obj_set_size(btn3,50,30);
+    lv_obj_set_size(btn3,110,30);
 	lv_obj_set_pos(btn3,0,120);
+    label_temp = lv_label_create(btn3);
+    lv_label_set_text(label_temp, "Disconnect");
+    lv_obj_add_event_cb(btn3, bt_event_handler, LV_EVENT_ALL, label_temp);
 
 	lv_obj_t *btn4 = lv_btn_create(lv_scr_act());//创建按钮4
-    lv_obj_set_size(btn4,50,30);
+    lv_obj_set_size(btn4,130,30);
 	lv_obj_set_pos(btn4,0,180);
+    label_temp = lv_label_create(btn4);
+    lv_label_set_text(label_temp, "BattChargeStart");
+    lv_obj_add_event_cb(btn4, bt_event_handler, LV_EVENT_ALL, label_temp);
 
 	lv_obj_t *roller = lv_roller_create(lv_scr_act());//创建滚轮控件
 	lv_roller_set_options(roller,"1\n2\n3\n4\n5\n6",LV_ROLLER_MODE_INFINITE);
-	lv_obj_set_pos(roller,100,55);
+	lv_obj_set_pos(roller,150,20);
 	
 	lv_group_add_obj(getEncoderGroup() ,btn1);
 	lv_group_add_obj(getEncoderGroup() ,btn2);
@@ -55,6 +84,8 @@ static void lvgl_task(void *param)
 {
     (void)param;
 
+    Serial.printf("lvgl_task ready to run\n");
+    //ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
     Serial.printf("lvgl_task start to run\n");
 
     while(1)
@@ -79,7 +110,7 @@ void Port_Init()
             10*1024,            /* 任务栈大小，根据需要自行设置*/
             NULL,              /* 参数，入参为空 */
             1,                 /* 优先级 */
-            &lvglTask_Handle);  /* 任务句柄 */
+            &handleTaskLvgl);  /* 任务句柄 */
 
     HAL::Backlight_SetGradual(100, 1300);
 }
