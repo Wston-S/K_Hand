@@ -15,7 +15,7 @@ void App_Init()
     Resource.Init();
 
     /*----------------------- Pages Init -----------------------*/
-    //StatusBar::Init(lv_layer_top());
+    StatusBar::Init(lv_layer_top());
 
     //manager.Install("Startup", "Pages/Startup");
 
@@ -25,7 +25,7 @@ void App_Init()
     //ACCOUNT_SEND_NOTIFY_CMD(Storage, STORAGE_CMD_LOAD);
     //ACCOUNT_SEND_NOTIFY_CMD(SysConfig, SYSCONFIG_CMD_LOAD);
 
-    //INIT_DONE();
+    INIT_DONE();
 }
 
 void App_UnInit()

@@ -38,9 +38,9 @@ public:
     typedef enum
     {
         EVENT_NONE,
-        EVENT_PUB_PUBLISH, // Publisher posted information
-        EVENT_SUB_PULL,    // Subscriber data pull request
-        EVENT_NOTIFY,      // Subscribers send notifications to publishers
+        EVENT_PUB_PUBLISH, // Publisher posted information   发布消息
+        EVENT_SUB_PULL,    // Subscriber data pull request   向发布者请求数据
+        EVENT_NOTIFY,      // Subscribers send notifications to publishers  -->Notify
         EVENT_TIMER,       // Timed event
         _EVENT_LAST
     } EventCode_t;
@@ -100,8 +100,8 @@ public:
     AccountBroker* Center;  /* Pointer to the data center */
     void* UserData;
 
-    std::vector<Account*> publishers;  /* Followed publishers */
-    std::vector<Account*> subscribers; /* Followed subscribers */
+    std::vector<Account*> publishers;  /* Followed publishers */  //放着我订阅了的Acount
+    std::vector<Account*> subscribers; /* Followed subscribers */ //放着订阅了我的Account
 
     struct
     {

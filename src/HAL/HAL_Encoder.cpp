@@ -8,6 +8,8 @@
 
 static TaskHandle_t encoderTask_Handle;
 
+static bool EncoderEnable = true;
+static bool EncoderDiffDisable = false;  //按下的时候滚动是无效的
 static int encoder_diff;
 static int encoder_count = 0;
 static int encoder_flag = 0;
@@ -21,9 +23,11 @@ static void Encoder_PushHandler(ButtonEvent* btn, int event)
     if (event == ButtonEvent::EVENT_PRESSED)
     {
         HAL::Buzz_Tone(500, 20);
+        EncoderDiffDisable = true;
     } else if (event == ButtonEvent::EVENT_RELEASED)
     {
         HAL::Buzz_Tone(700, 20);
+        EncoderDiffDisable = false;
     } else if (event == ButtonEvent::EVENT_LONG_PRESSED)
     {
         HAL::Audio_PlayMusic("Shutdown");
@@ -33,6 +37,11 @@ static void Encoder_PushHandler(ButtonEvent* btn, int event)
 
 static void Encoder_EventHandler()
 {
+  if(!EncoderEnable || EncoderDiffDisable)
+  {
+      return;
+  }
+
   if(digitalRead(EC_A) == 0)
   {
     xSemaphoreGiveFromISR( MuxSem_Handle, NULL);//给出互斥量
@@ -153,4 +162,9 @@ int16_t HAL::Encoder_GetDiff()
 void HAL::Encoder_Update()
 {
   EncoderPush.EventMonitor(Encoder_GetIsPush());
+}
+
+void HAL::Encoder_SetEnable(bool en)
+{
+  EncoderEnable = en;
 }

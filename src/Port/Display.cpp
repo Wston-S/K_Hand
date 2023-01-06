@@ -4,7 +4,8 @@
 #include "HAL/HAL.h"
 #include <Port/lv_port/lv_port_disp.h>
 #include <Port/lv_port/lv_port_indev.h>
-
+#include "App/Resources/ResourcePool.h"
+#include "App/Pages/StatusBar/StatusBar.h"
 
 TaskHandle_t  handleTaskLvgl;
 
@@ -62,7 +63,7 @@ void demo1(void)
     lv_obj_add_event_cb(btn3, bt_event_handler, LV_EVENT_ALL, label_temp);
 
 	lv_obj_t *btn4 = lv_btn_create(lv_scr_act());//创建按钮4
-    lv_obj_set_size(btn4,130,30);
+    lv_obj_set_size(btn4,150,30);
 	lv_obj_set_pos(btn4,0,180);
     label_temp = lv_label_create(btn4);
     lv_label_set_text(label_temp, "BattChargeStart");
@@ -80,13 +81,40 @@ void demo1(void)
 	lv_group_set_editing(getEncoderGroup(),false);
 }
 
+static void demo2()
+{
+    LV_IMG_DECLARE(img_src_satellite);
+
+    lv_obj_t* img = lv_img_create(lv_scr_act());
+     lv_img_set_src(img, Resource.GetImage("satellite"));
+    lv_obj_set_pos(img, 10, 100);
+
+    img = lv_img_create(lv_scr_act());
+    lv_img_set_src(img, Resource.GetImage("sd_card"));
+    lv_obj_set_pos(img, 50, 100);
+
+    img = lv_img_create(lv_scr_act());
+    lv_img_set_src(img, Resource.GetImage("bluetooth"));
+    lv_obj_set_pos(img, 80, 100);
+
+    img = lv_img_create(lv_scr_act());
+    lv_img_set_src(img, Resource.GetImage("battery"));
+    lv_obj_set_pos(img, 100, 100);
+
+    Serial.printf("demo2 end\n");
+}   
+
 static void lvgl_task(void *param)
 {
     (void)param;
 
     Serial.printf("lvgl_task ready to run\n");
-    //ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
     Serial.printf("lvgl_task start to run\n");
+
+    demo2();
+
+    StatusBar::Appear(true);
 
     while(1)
     {       
@@ -101,15 +129,13 @@ void Port_Init()
     lv_init();
     lv_port_disp_init();
     lv_port_indev_init();
-	
-    demo1();
 
     xTaskCreate(
             lvgl_task,          /* 任务函数 */
             "lvgl_task",         /* 任务名 */
-            10*1024,            /* 任务栈大小，根据需要自行设置*/
+            20*1024,            /* 任务栈大小，根据需要自行设置*/
             NULL,              /* 参数，入参为空 */
-            1,                 /* 优先级 */
+            configMAX_PRIORITIES - 1,                 /* 优先级 */
             &handleTaskLvgl);  /* 任务句柄 */
 
     HAL::Backlight_SetGradual(100, 1300);

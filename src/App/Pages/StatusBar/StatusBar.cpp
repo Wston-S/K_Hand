@@ -35,13 +35,13 @@ static void StatusBar_AnimCreate(lv_obj_t* contBatt);
 
 struct
 {
-    lv_obj_t* cont;
+    lv_obj_t* cont; ////宽240，高20的状态栏，应该是顶头上面那一段的整个空间
 
     struct
     {
-        lv_obj_t* img;
-        lv_obj_t* label;
-    } satellite;
+        lv_obj_t* img;      //左上角脚的哪个白色的向右倾斜的柱子图片
+        lv_obj_t* label;    //柱子右边的label
+    } satellite;    
 
     lv_obj_t* imgSD;
     lv_obj_t* imgBT;
@@ -120,25 +120,49 @@ static void StatusBar_AnimCreate(lv_obj_t* contBatt)
     lv_anim_init(&a);
     lv_anim_set_var(&a, contBatt);
     lv_anim_set_exec_cb(&a, [](void* var, int32_t v) {
-        lv_obj_set_height((lv_obj_t*)var, v);
+        lv_obj_set_height((lv_obj_t*)var, v);               //动画回调函数
     });
     lv_anim_set_values(&a, 0, BATT_USAGE_HEIGHT);
     lv_anim_set_time(&a, 1000);
-    lv_anim_set_ready_cb(&a, StatusBar_onAnimHeightFinish);
+    lv_anim_set_ready_cb(&a, StatusBar_onAnimHeightFinish);  //参数2，动画执行完之后的回调
     lv_anim_start(&a);
 }
 
 static void StatusBar_Update(lv_timer_t* timer)
 {
-    AccountSystem::Storage_Basic_Info_t sdInfo;
-    actStatusBar->Pull("Storage", &sdInfo, sizeof(sdInfo));
+    AccountSystem::Storage_Basic_Info_t sdInfo = {
+        .isDetect = true,
+        .totalSizeMB = 32.0f,
+        .freeSizeMB = 10.1f
+    };
+    {
+        static int cnt = 0;
+        if(cnt++>=5)
+        {
+            cnt = 0;
+            sdInfo.isDetect = !sdInfo.isDetect;
+        }
+    }
+    //actStatusBar->Pull("Storage", &sdInfo, sizeof(sdInfo));
     sdInfo.isDetect ? lv_obj_clear_flag(ui.imgSD, LV_OBJ_FLAG_HIDDEN) : lv_obj_add_flag(ui.imgSD, LV_OBJ_FLAG_HIDDEN);
 
     //HAL::BluetoothConnected() ? lv_obj_clear_flag(ui.imgBT, LV_OBJ_FLAG_HIDDEN) : lv_obj_add_flag(ui.imgBT, LV_OBJ_FLAG_HIDDEN);
 
     /* battery */
-    HAL::Power_Info_t power;
-    actStatusBar->Pull("Power", &power, sizeof(power));
+    HAL::Power_Info_t power = {
+        .voltage = 3,
+        .usage = 80,
+        .isCharging = true,
+    };
+    {
+        static int cnt = 0;
+        if(cnt++>=8)
+        {
+            cnt = 0;
+            power.isCharging = !power.isCharging;
+        }
+    }
+    //actStatusBar->Pull("Power", &power, sizeof(power));
     lv_label_set_text_fmt(ui.battery.label, "%d", power.usage);
 
     bool Is_BattCharging = power.isCharging;
@@ -200,16 +224,16 @@ static lv_obj_t* StatusBar_Create(lv_obj_t* par)
     );
     lv_obj_set_style_transition(cont, &tran, LV_STATE_USER_1);
 
-    ui.cont = cont;
+    ui.cont = cont;   
 
     static lv_style_t style;
     lv_style_init(&style);
     lv_style_set_text_color(&style, lv_color_white());
     lv_style_set_text_font(&style, Resource.GetFont("bahnschrift_13"));
 
-//    /* satellite */
+//    /* satellite */   
     lv_obj_t* img = lv_img_create(cont);
-//    lv_img_set_src(img, Resource.GetImage("satellite"));
+//    lv_img_set_src(img, Resource.GetImage("satellite"));  //13x13
 //    lv_obj_align(img, LV_ALIGN_LEFT_MID, 14, 0);
 //    ui.satellite.img = img;
 
@@ -221,7 +245,7 @@ static lv_obj_t* StatusBar_Create(lv_obj_t* par)
 
     /* sd card */
     img = lv_img_create(cont);
-    lv_img_set_src(img, Resource.GetImage("sd_card"));
+    lv_img_set_src(img, Resource.GetImage("sd_card"));  // 10x13
     lv_obj_align(img, LV_ALIGN_LEFT_MID, 14, -1);
     lv_obj_add_flag(img, LV_OBJ_FLAG_HIDDEN);
     ui.imgSD = img;
@@ -275,6 +299,7 @@ static lv_obj_t* StatusBar_Create(lv_obj_t* par)
 
     lv_timer_t* timer = lv_timer_create(StatusBar_Update, 1000, nullptr);
     lv_timer_ready(timer);
+
 
     return ui.cont;
 }

@@ -1,23 +1,23 @@
-#ifndef __RESOURCEPOOL_H
-#define __RESOURCEPOOL_H
+#ifndef __RESOURCE_POOL
+#define __RESOURCE_POOL
 
-#include "lvgl.h"
 #include "App/Utils/ResourceManager/ResourceManager.h"
+#include "lvgl.h"
 
 class ResourcePool
 {
+
 public:
     ResourceManager Font_;
     ResourceManager Image_;
 
 public:
     void Init();
-    lv_font_t *GetFont(const char *name)
+    lv_font_t* GetFont(const char* name)
     {
-        return (lv_font_t *)Font_.GetResource(name);
+        return (lv_font_t*)Font_.GetResource(name);
     }
-
-    const void *GetImage(const char *name)
+    const void* GetImage(const char* name)
     {
         return Image_.GetResource(name);
     }
@@ -26,4 +26,3 @@ public:
 extern ResourcePool Resource;
 
 #endif
-

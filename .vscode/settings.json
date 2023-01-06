@@ -21,6 +21,12 @@
         "type_traits": "c",
         "utility": "c",
         "new": "cpp",
-        "*.inc": "cpp"
+        "*.inc": "cpp",
+        "fstream": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "limits": "cpp"
     }
 }
